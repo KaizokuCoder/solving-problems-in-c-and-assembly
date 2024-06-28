@@ -7,34 +7,32 @@
  * erro. Apresente o resultado da operação. */
 
 int main(void) {
+  int num1, num2, operador;
 
-  int num_1, num_2, operador;
-  printf(
-      "Escolha a operacao(1 para soma, 2 para subtracao, 3 para multiplicacao, "
-      "4 para divisao):  ");
+  printf("Escolha a operacao(1 = soma, 2 = subtracao, 3 = multiplicacao e 4 = divisao): ");
   scanf("%d", &operador);
 
-  if (operador < 1 || operador > 6) {
+  if (operador < 1 || operador > 4) {
     printf("OPERACAO INVALIDA");
 
   } else {
     printf("Primeiro numero: ");
-    scanf("%d", &num_1);
+    scanf("%d", &num1);
 
     printf("Segundo numero: ");
-    scanf("%d", &num_2);
+    scanf("%d", &num2);
 
     if (operador == 1) {
-      printf("Soma: %d + %d = %d", num_1, num_2, num_1 + num_2);
+      printf("%d + %d = %d", num1, num2, num1 + num2);
 
     } else if (operador == 2) {
-      printf("Subtracao: %d - %d = %d", num_1, num_2, num_1 - num_2);
+      printf("%d - %d = %d", num1, num2, num1 - num2);
 
     } else if (operador == 3) {
-      printf("Multiplicacao: %d x %d = %d", num_1, num_2, num_1 * num_2);
+      printf("%d x %d = %d", num1, num2, num1 * num2);
 
     } else if (operador == 4) {
-      printf("Divisao: %d / %d = %d", num_1, num_2, num_1 / num_2);
+      printf("%d / %d = %d, de resto: %d", num1, num2, (int)num1 / num2, num1 % num2);
     }
   }
 

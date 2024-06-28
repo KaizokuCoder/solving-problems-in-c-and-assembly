@@ -1,129 +1,174 @@
 ;; PRATICA 2 - DEMONSTRACAO DE ESCRITA DE NUMERO
 
-org 100h
+ORG 100h
 
-; --- OPERANDO 1 ---    
-; Imprime op1msg    
-MOV DX, offset msg1
+; imprime a mensagem do operador    
+LEA DX, msg1
 MOV AH, 9
 INT 21h
 
-CALL SCAN_NUM
-
+; pega o input do usuario e pula uma linha
+CALL scan_num
 PUTC 0Dh
 PUTC 0Ah
 
-MOV num1, cx
+; verifica se o operador eh valido
+CMP CX, 5
+JAE erro
+CMP CX, 1
+JB erro
 
-MOV DX, offset msg2
+; coloca o numero de input na variavel op
+MOV w.op, CX
+
+; imprime a mensagem do primeiro numero
+LEA DX, msg2
 MOV AH, 9
 INT 21h
 
-CALL SCAN_NUM
-
+; pega o input do usuario e pula uma linha
+CALL scan_num
 PUTC 0Dh
 PUTC 0Ah
 
-MOV oper, cx
+; coloca o numero de input na variavel num1
+MOV num1, CX          
 
-MOV DX, offset msg3
+; imprime a mensagem do segundo numero
+LEA DX, msg3
 MOV AH, 9
 INT 21h
 
-CALL SCAN_NUM
-
+; pega o input do usuario e pula uma linha
+CALL scan_num
 PUTC 0Dh
 PUTC 0Ah
 
-MOV num2, cx
+; coloca o numero de input na variavel num2
+MOV num2, CX
 
-cmp oper, 0
-je soma
 
-cmp oper, 1
-je subt
+; verifica se eh soma
+CMP op, 1
+JE soma
+                     
+; verifica se eh subtracao                     
+CMP op, 2
+JE subt
 
-cmp oper, 2
-je multip
+; verifica se eh multiplicacao
+CMP op, 3
+JE multip
 
-cmp oper, 3
-je divid
-
-jmp erro
+; verifica se eh divisao
+CMP op, 4
+JE divid
 
 soma:
-MOV DX, offset msg5
-MOV AH, 9
-INT 21h
-mov ax, num1
-add ax, num2
-call print_num
-jmp stop
+
+    ; imprime a mensagem de soma
+    PUTR '+'
+    
+    ; faz a soma e imprime o resultado
+    MOV AX, num1
+    ADD AX, num2
+    CALL print_num
+    
+    JMP stop
+
 
 subt:
-MOV DX, offset msg5
-MOV AH, 9
-INT 21h
-mov ax, num1
-sub ax, num2
-call print_num
-jmp stop
 
+    ; imprime a mensagem de subtracao
+    PUTR '-'
+    
+    ; faz a subtracao e imprime o resultado
+    MOV AX, num1
+    SUB AX, num2
+    CALL print_num
+    
+    JMP stop
+     
+     
 multip:
-MOV DX, offset msg5
-MOV AH, 9
-INT 21h
-MOV ax, num1
-imul b.num2 
-call print_num
-jmp stop
-
+    
+    ; imprime a mensagem de multiplicacao
+    PUTR '*'
+    
+    ; faz a multiplicacao e imprime o resultado
+    MOV AX, num1
+    IMUL b.num2 
+    CALl print_num
+    
+    JMP stop
+     
+     
 divid:
 
-;perguntar sobre valores da divisao de negativo com positivo
-
-MOV DX, offset msg5
-MOV AH, 9
-INT 21h
-
-MOV ax, num1
-IDIV b.num2
-MOV b.num1, al
-MOV b.num2, ah
-MOV ax, num1
-
-CALL print_num
-
-PUTC 0Dh
-PUTC 0Ah
-
-MOV DX, offset msg6
-MOV AH, 9
-INT 21h
-
-MOV ax, num2
-CALL print_num 
-JMP stop
-
+    ; divisao com resto negativo da erro
+    
+    ; imprime a mensagem de divisao
+    PUTR '/'
+    
+    ; faz a divisao e imprime o resultado
+    MOV AX, num1
+    IDIV b.num2
+    MOV b.num1, AL
+    MOV b.num2, AH
+    MOV AX, num1
+    
+    CALL print_num
+    
+    ; imprime a mensagem de resto
+    LEA DX, resto
+    MOV AH, 9
+    INT 21h
+    
+    ; pega o resto e imprime
+    MOV AX, num2
+    CALL print_num 
+    JMP stop
+     
+     
 erro:
-MOV DX, offset msg4
-MOV AH, 9
-INT 21h
+    
+    ; imprime a mensagem de erro
+    LEA DX, msg_erro
+    MOV AH, 9
+    INT 21h
+    
 
 stop:
+
 RET
 
 ; Prints:
-msg1 db "Primeiro Numero Inteiro: $"
-msg2 db "Operador (0 = soma, 1 = subtracao, 2 = multiplicacao e 3 = divisao): $"
-msg3 db "Segundo Numero Inteiro: $"
-msg4 db "Operacao invalida $"
-msg5 db "O resultado eh $"
-msg6 db "O resto vale $"
+msg1 DB "Operador (1 = soma, 2 = subtracao, 3 = multiplicacao, 4 = divisao): $"
+msg2 DB "Primeiro numero: $"
+msg3 DB "Segundo numero: $"
 
-num1 dw ?
-oper dw ?
-num2 dw ?
+resto DB ", de resto $"
+
+msg_erro DB "OPERADOR INVALIDO$"
+
+op DB ?
+
+num1 DW ?
+num2 DW ?
+
+; esse macro imprime o resultado da conta
+PUTR    MACRO   char
+        MOV     AX, num1
+        CALL    print_num
+        PUTC    ' '
+        PUTC    char
+        PUTC    ' '
+        MOV     AX, num2
+        CALL    print_num
+        PUTC    ' '
+        PUTC    '='
+        PUTC    ' '
+ENDM        
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; these functions are copied from emu8086.inc ;;;
