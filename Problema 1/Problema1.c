@@ -25,16 +25,16 @@ int main(void) {
     scanf("%d", &num_2);
 
     if (operador == 1) {
-      printf("Soma: %d", num_1 + num_2);
+      printf("Soma: %d + %d = %d", num_1, num_2, num_1 + num_2);
 
     } else if (operador == 2) {
-      printf("Subtracao: %d", num_1 - num_2);
+      printf("Subtracao: %d - %d = %d", num_1, num_2, num_1 - num_2);
 
     } else if (operador == 3) {
-      printf("Multiplicacao: %d", num_1 * num_2);
+      printf("Multiplicacao: %d x %d = %d", num_1, num_2, num_1 * num_2);
 
     } else if (operador == 4) {
-      printf("Divisao: %d", num_1 / num_2);
+      printf("Divisao: %d / %d = %d", num_1, num_2, num_1 / num_2);
     }
   }
 
