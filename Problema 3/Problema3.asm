@@ -84,9 +84,8 @@ SOMA_PA         PROC
          
         MOV     DX, 0
             
-        ADD     AX, BX ; AX = AX + BX        
-        
-        
+        ADD     AX, BX ; AX = AX + BX       
+
         IMUL    CX     ; (DX AX) = AX * CX
                                                   
         MOV     BX, 2                                                 
