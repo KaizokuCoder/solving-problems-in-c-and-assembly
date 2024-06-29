@@ -90,8 +90,7 @@ SOMA_PA         PROC
                                                   
         MOV     BX, 2                                                 
         IDIV    BX     ; AX = (DX AX) / BX  
-        
-    
+
         RET
 SOMA_PA         ENDP
               
