@@ -115,17 +115,25 @@ divid:
     IDIV b.num2
     MOV b.num1, AL
     MOV b.num2, AH
+    
+    ; imprime o resultado
     MOV AX, num1
-    
     CALL print_num
-    
+            
     ; imprime a mensagem de resto
     LEA DX, resto
     MOV AH, 9
     INT 21h
     
     ; pega o resto e imprime
-    MOV AX, num2
+    CMP num2, 127
+    JS print_resto
+    
+    ; se for negativo
+    MOV AH, 255
+    
+    print_resto:
+    MOV AL, b.num2
     CALL print_num 
     JMP stop
      

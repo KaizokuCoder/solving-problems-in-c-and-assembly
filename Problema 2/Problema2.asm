@@ -14,11 +14,29 @@ CALL scan_num
 PUTC 0Dh
 PUTC 0Ah
 
+; Verifica se o numero eh < 2
+CMP CX, 2
+JS not_valid
+JMP valid
+
+not_valid:
+    ; Imprime a mensagem de invalido e pula para o fin
+    LEA DX, invalid
+    MOV AH, 9
+    INT 21h
+    
+    ; Pula para o trampolim
+    JMP trampolim
+
+valid:
+
 ; Pega o numero divido por 2
+MOV DX, 0
 MOV AX, CX
-MOV BL, 2
-DIV BL
-ADD divided_by_2, AL
+MOV BX, 2
+DIV BX
+MOV divided_by_2, AX
+ADD divided_by_2, 1
 
 ; Imprime o numero pego
 MOV AX, CX
@@ -26,21 +44,28 @@ CALL print_num
 PUTC 20h
 
 ; Verifica se o numero eh primo
-MOV BL, 1
+MOV SI, 1
+JMP verify_prime
+
+trampolim:
+
+; Pula para o final
+JMP fin
 
 verify_prime:
     
     ; inicia os registradores para a verificacao
+    MOV DX, 0
     MOV AX, CX
-    INC BL
+    INC SI
     
     ; verifica se nao precisa mais continuar
-    CMP BL, divided_by_2
+    CMP SI, divided_by_2
     JZ end_verify
     
     ; verifica se SI eh divisor
-    DIV BL
-    CMP AH, 0
+    DIV SI
+    CMP DX, 0
     
     JZ verify_first
     JMP verify_prime
@@ -59,8 +84,9 @@ verify_first:
       
 first:
     
-    ; salva o valor anterior de AX
+    ; salva o valor anterior de AX e DX
     PUSH AX
+    PUSH DX
 
     ; imprime a mensagem not_prime
     LEA DX, not_prime
@@ -69,6 +95,7 @@ first:
     
     ; retorna o valor salvo
     POP AX
+    POP DX
     
     ; define o numero como nao primo
     MOV is_prime, 0
@@ -79,9 +106,7 @@ print_not_prime:
 
     ; imprime o divisor
     PUTC 20h
-    MOV divisor, 0
-    ADD b.divisor, BL
-    MOV AX, divisor
+    MOV AX, SI
     CALL print_num
     
     JMP verify_prime
@@ -105,13 +130,14 @@ RET
 ; Declaracao de variaveis
 msg1 DB "Digite um numero para saber se ele eh primo: $"
 
-not_prime DB "nao eh primo e tem como divisores 1$"
+invalid DB "Por definicao um numero menor que 2 nao eh primo$"
+
+not_prime DB "nao eh primo e tem como divisores$"
 prime DB "eh primo$"
 
 is_prime DB 1
-divisor DW ?
 
-divided_by_2 DB 0
+divided_by_2 DW ?
         
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
