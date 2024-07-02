@@ -1,11 +1,11 @@
 #include <stdio.h>
 
-short pa(int first, int last, int num) {
+int pa(int first, int last, int num) {
   return ((first + last) * num) / 2;
 }
 
 int main() {
-  short first, last, num;
+  int first, last, num;
 
   printf("Digite o primeiro digito da PA:  ");
   scanf("%d", &first);
@@ -16,7 +16,7 @@ int main() {
   printf("Digite o numero de termos da PA: ");
   scanf("%d", &num);
 
-  short result = pa(first, last, num);
+  int result = pa(first, last, num);
 
   printf("A soma da PA eh: %d", result);
 }
