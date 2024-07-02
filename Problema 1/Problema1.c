@@ -1,11 +1,5 @@
 #include <stdio.h>
 
-/* Desenvolva um programa que receba dois valores para efetuar operações
- * matemáticas de acordo com a opção do usuário, 1 para soma, 2 para subtração
- * (do primeiro pelo segundo), 3 para multiplicação, 4 para divisão (do primeiro
- * pelo segundo). Qualquer valor diferente desse deve retornar uma mensagem de
- * erro. Apresente o resultado da operação. */
-
 int main(void) {
   int num1, num2, operador;
 
