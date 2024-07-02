@@ -72,6 +72,10 @@ soma:
     ; faz a soma e imprime o resultado
     MOV AX, num1
     ADD AX, num2
+    
+    ; checa se overflow
+    JO overflow
+    
     CALL print_num
     
     JMP stop
@@ -85,6 +89,10 @@ subt:
     ; faz a subtracao e imprime o resultado
     MOV AX, num1
     SUB AX, num2
+    
+    ; checa se overflow
+    JO overflow
+    
     CALL print_num
     
     JMP stop
@@ -97,8 +105,12 @@ multip:
     
     ; faz a multiplicacao e imprime o resultado
     MOV AX, num1
-    IMUL b.num2 
-    CALl print_num
+    IMUL b.num2
+    
+    ; checa se overflow
+    JO overflow
+     
+    CALL print_num
     
     JMP stop
      
@@ -110,9 +122,17 @@ divid:
     ; imprime a mensagem de divisao
     PUTR '/'
     
+    ; Checa se divisor eh 0
+    CMP num2, 0
+    JE divid_por_0
+    
     ; faz a divisao e imprime o resultado
     MOV AX, num1
     IDIV b.num2
+    
+    ; checa se overflow
+    JO overflow
+    
     MOV b.num1, AL
     MOV b.num2, AH
     
@@ -137,6 +157,20 @@ divid:
     CALL print_num 
     JMP stop
      
+overflow:
+    ; imprime a mensagem de overflow
+    LEA DX, msg_overflow
+    MOV AH, 9
+    INT 21h
+    JMP stop
+    
+divid_por_0:
+    ; imprime a mensagem de overflow
+    LEA DX, msg_divisor_0
+    MOV AH, 9
+    INT 21h
+    JMP stop
+
      
 erro:
     
@@ -154,6 +188,10 @@ RET
 msg1 DB "Operador (1 = soma, 2 = subtracao, 3 = multiplicacao, 4 = divisao): $"
 msg2 DB "Primeiro numero: $"
 msg3 DB "Segundo numero: $"
+
+msg_overflow DB "Overflow $"
+
+msg_divisor_0 DB "ERRO (divisor = 0) $"
 
 resto DB ", de resto $"
 
