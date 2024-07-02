@@ -1,4 +1,4 @@
-; problema 3 - soma de uma pa :p
+; problema 3 - soma de uma PA :p
 
 ORG     100h
 
@@ -7,9 +7,9 @@ LEA     DX, msg1
 MOV     AH, 9
 INT     21h
 
-; ler inteiro do usuario e passar para variavel first  
-CALL    SCAN_NUM
-MOV     first, CX
+; ler o primeiro termo do usuario e armazena em CX  
+CALL    scan_num
+PUSH    CX
 
 ; pular linha
 PUTC    0Dh
@@ -20,9 +20,9 @@ LEA     DX, msg2
 MOV     AH, 9
 INT     21h  
 
-; ler inteiro do usuario e passar para variavel last
-CALL    SCAN_NUM
-MOV     last, CX   
+; ler o ultimo termo do usuario e armazena em CX
+CALL    scan_num
+PUSH    CX   
 
 ; pular linha
 PUTC    0Dh
@@ -33,65 +33,98 @@ LEA     DX, msg3
 MOV     AH, 9
 INT     21h  
 
-; ler inteiro do usuario e passar para variavel last
+; ler numero de termos do usuario e armazena em CX
 CALL    scan_num
-MOV     num, CX   
+PUSH    CX   
 
 ; pular linha
 PUTC    0Dh
 PUTC    0Ah
 
-; cria uma pilha para os parametros e chama a funcao
+; a funcao pega os parametros da pilha 
 
-MOV     AX, first
-MOV     BX, last
-MOV     CX, num
-CALL    soma_pa     ; o resultado fica em AX 
+CALL    soma_pa             ; o resultado fica em AX, overflow em DX 
 
-; imprimir o resultado 
-PUSH    AX          ; save AX
-LEA     DX, msg4
-MOV     AH, 9
-INT     21h  
-POP     AX          ; restore AX
-CALL    print_num   ; print AX
+CMP     DX, 1               ; verifica se tem overflow
+JE      overflow_case 
 
-PUTC    0Dh         ; \n no final do output
-PUTC    0Ah
+JMP     imprimir_resultado
 
-RET
+overflow_case:
+    LEA     DX, msg5        ; imprimir "overflow"
+    MOV     AH, 9
+    INT     21h
+    JMP     fim  
+
+imprimir_resultado: 
+    PUSH    AX              ; save AX
+    LEA     DX, msg4
+    MOV     AH, 9
+    INT     21h  
+    POP     AX              ; restore AX
+    CALL    print_num       ; print AX
+
+    PUTC    0Dh             ; \n no final do output
+    PUTC    0Ah
+
+fim:
+    RET
 
 ; Iniciando variaveis 
 msg1    DB "Digite o primeiro digito da PA: $"
 msg2    DB "Digite o ultimo digito da PA: $"
 msg3    DB "Digite o numero de termos da PA: $"
-msg4    DB "A soma da pa eh: $"
-
-first   DW ?
-last    DW ?
-num     DW ?
+msg4    DB "A soma da PA eh: $"
+msg5    DB "Deu overflow aqui oh$"
                        
-;;;;;;;;;;;;;;;;;;;;;;                       
-;;; my function :D ;;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;                       
+;;; my procedure :D ;;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 ; esse procedimento calcula a soma de uma P.A.
-; retorna o resultado em AX (usando BX, CX e DX)
-SOMA_PA         PROC 
-        ; AX = first
-        ; BX = last
-        ; CX = num
+; AX = first
+; BX = last
+; CX = num
+; resultado fica em AX
+; overflow fica em DX
+
+SOMA_PA         PROC
+    
+    start:        
+        POP     SI          ; remove o endereco da funcao da pilha 
+        
+        POP     CX          ; puxa os valores da pilha
+        POP     BX
+        POP     AX
+        
          
-        MOV     DX, 0
+        MOV     DX, 0       ; zera DX para a multiplicacao
             
-        ADD     AX, BX ; AX = AX + BX       
+        ADD     AX, BX      ; AX = AX + BX     
+        JO      sim_overflow
+               
 
-        IMUL    CX     ; (DX AX) = AX * CX
+        IMUL    CX          ; (DX AX) = AX * CX 
+        JO      sim_overflow
                                                   
-        MOV     BX, 2                                                 
-        IDIV    BX     ; AX = (DX AX) / BX  
-
+        MOV     BX, 2                                               
+        IDIV    BX          ; AX = (DX AX) / BX
+                            ; DX = (DX AX) % BX (resto)
+        JO      sim_overflow
+        JMP     nao_overflow
+        
+    sim_overflow:
+        MOV     DX, 1       ; compare DX com 1 para overflow
+        JMP     finish      ; depois do procedimento
+    
+    nao_overflow:
+        MOV     DX, 0       ; remove o resto de DX
+                            ; para nao dar mensagem de overflow
+                            
+    finish:
+        PUSH    SI          ; readiciona o endereco da funcao da pilha
         RET
+        
 SOMA_PA         ENDP
               
 
