@@ -26,7 +26,14 @@ int main(void) {
       printf("%d x %d = %d", num1, num2, num1 * num2);
 
     } else if (operador == 4) {
-      printf("%d / %d = %d, de resto: %d", num1, num2, (int)num1 / num2, num1 % num2);
+
+      if(num2 == 0){
+        printf("Nao e possivel realizar divisao por 0");
+      }
+      else{
+        printf("%d / %d = %d, de resto: %d", num1, num2, (int)num1 / num2, num1 % num2);
+        
+      }
     }
   }
 
