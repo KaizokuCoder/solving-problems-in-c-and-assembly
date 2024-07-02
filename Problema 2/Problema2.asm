@@ -25,8 +25,8 @@ not_valid:
     MOV AH, 9
     INT 21h
     
-    ; Pula para o trampolim
-    JMP trampolim
+    ; Pula para o final do codigo
+    JMP fin
 
 valid:
 
@@ -45,12 +45,6 @@ PUTC 20h
 
 ; Verifica se o numero eh primo
 MOV SI, 1
-JMP verify_prime
-
-trampolim:
-
-; Pula para o final
-JMP fin
 
 verify_prime:
     
@@ -130,7 +124,7 @@ RET
 ; Declaracao de variaveis
 msg1 DB "Digite um numero para saber se ele eh primo: $"
 
-invalid DB "Por definicao um numero menor que 2 nao eh primo$"
+invalid DB "Por definicao, um numero menor que 2 nao eh primo$"
 
 not_prime DB "nao eh primo e tem como divisores$"
 prime DB "eh primo$"
