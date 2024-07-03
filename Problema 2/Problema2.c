@@ -10,6 +10,13 @@ int main() {
   // Pega o input do usuário
   scanf("%d", &n);
 
+  // Verifica se o número sequer pode ser primo
+  if (n < 2) {
+    printf("Por definicao, um numero menor que 2 nao eh primo");
+
+    return 0;
+  }
+
   // Imprime o número
   printf("%d ", n);
 
