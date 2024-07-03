@@ -91,7 +91,7 @@ msg5    DB "Deu overflow aqui oh$"
 SOMA_PA         PROC
     
     start:        
-        POP     SI          ; remove o endereco da funcao da pilha 
+        POP     SI          ; remove o endereco de retorno da pilha 
         
         POP     CX          ; puxa os valores da pilha
         POP     BX
@@ -122,7 +122,7 @@ SOMA_PA         PROC
                             ; para nao dar mensagem de overflow
                             
     finish:
-        PUSH    SI          ; readiciona o endereco da funcao da pilha
+        PUSH    SI          ; readiciona o endereco de retorno da pilha
         RET
         
 SOMA_PA         ENDP
